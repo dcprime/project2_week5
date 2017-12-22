@@ -160,7 +160,7 @@ A_Node *DeQueueAudio(void)
 	return(pTemp);	  // return old ‘head’ 	
 }
 
-void AddMessToAudioQueue(short* audio_file) {
+void AddMessToAudioQueue(Message audio_message) {
 	// create node to hold audio message content
 	if (IsAudioQueueEmpty()) {
 		a_pNode = (a_link)malloc(sizeof(A_Node)); 	        // Make first Node
@@ -173,7 +173,7 @@ void AddMessToAudioQueue(short* audio_file) {
 	}
 
 	// add audio message content to node and add node to queue
-	memcpy(a_pNode->Data.recording, audio_file, SAMPLES_SEC * RECORD_TIME * sizeof(short));
+	memcpy(&(a_pNode->Data), &audio_message, sizeof(Message));
 	AddToAudioQueue(a_pNode);
 	printf("\n--- Audio Message added to queue ---\n");
 }

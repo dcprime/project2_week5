@@ -9,7 +9,7 @@
 #define COMPORT "\\\\.\\COM10"								// COM port used for transmit / receive
 
 extern long lBigBufSize;		// total number of samples in buffer
-extern int audio_comp_in_size;	// bytes read on receiving
+extern int bytes_received;		// bytes read on receiving
 
 // Ensure that default character set is not Unicode
 // Communication variables and parameters
@@ -74,7 +74,7 @@ int inputFromPort(LPVOID buf, DWORD szBuf) {
 	}
 	else if (NumberofBytesRead != 0) {
 		printf("\n\nSuccessful reception! There were %ld bytes read\n", NumberofBytesRead);
-		audio_comp_in_size = NumberofBytesRead;
+		bytes_received = NumberofBytesRead;
 		return 1;	// success
 	}
 	else {

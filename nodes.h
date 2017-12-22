@@ -2,15 +2,16 @@
 /* nodes.h: Header file for node functions and definitions */
 
 #include "sound.h"
+#include "huffman.h"
 
 enum audORtext {audio, text};
+const int audio_as_char = SAMPLES_SEC * RECORD_TIME * (sizeof(short) / sizeof(char));
+const int huff_compressed_size = audio_as_char + HUFFEXTRA;
 
 /******************* message structure definitions ********************/
 
 // Message structure
 typedef struct message {
-	short recording[SAMPLES_SEC * RECORD_TIME];
-    char text[141];
 	enum audORtext message_type;
 	bool compressed;
 	int data_size;
@@ -19,6 +20,8 @@ typedef struct message {
 	short receiver_id;
 	time_t timestamp;	// use ctime(&timestamp) to convert to string
     char other[25];
+	char text[141];
+	unsigned char recording[huff_compressed_size];
 } Message;
 
 // ------------------- text nodes ------------------- //
@@ -34,7 +37,7 @@ typedef struct node Node;
 
 // ------------------- audio nodes ------------------- //
 
-// link is a pointer to a Node
+// a_link is a pointer to an a_node
 typedef struct a_node* a_link;
 
 // Node contains a pointer to next node and a Message structure

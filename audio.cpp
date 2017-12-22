@@ -8,12 +8,14 @@ Nov 24, 2017 - created cpp and header files to run audio operations from previou
 
 #include <stdio.h>
 #include <Windows.h>
+#include <time.h>
 #include "sound.h"
 #include "audio.h"
 #include "RS232Comm.h"
 #include "huffman.h"
 #include "nodes.h"
 #include "queues.h"
+
 
 char replay;
 char c;                                                 // used to flush extra input
@@ -22,17 +24,15 @@ FILE* f;
 
 extern short iBigBufIn[];	// receiving buffer
 extern long lBigBufSize;	// total number of samples in buffer
-const int audio_as_char = SAMPLES_SEC * RECORD_TIME * (sizeof(short) / sizeof(char));
 unsigned char audio_out[audio_as_char];
 
-const int huff_compressed_size = audio_as_char + HUFFEXTRA;
 unsigned char audio_compressed[huff_compressed_size];
 int audio_comp_out_size;
-int audio_comp_in_size;
+int bytes_received;
 
 int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 	char send;
-	printf("\nWould you like to send your audio recording? (y/n): ");
+	printf("\nWould you like to send your message? (y/n): ");
 	scanf_s("%c", &send, 1);
 	while ((c = getchar()) != '\n' && c != EOF) {}		// Flush other input
 	if ((send == 'y') || (send == 'Y')) {
@@ -90,33 +90,41 @@ void StartListeningMode(int* unlistenedAudio, int* totalAudio, bool compressed) 
 
 	int run = TRUE;
 	int success = 0;
-	unsigned char audioIn[audio_as_char];
-	unsigned char audioInCompressed[huff_compressed_size];
 	short dot_counter = 0;
 	unsigned long timeout = 0;
+	unsigned char messInAsChar[sizeof(Message)];
+	Message messInAsMessage;
 
 	while (run == TRUE) {
-		if (compressed) {
-			success = inputFromPort(audioInCompressed, audio_as_char);	// Receive compressed audio from port
-		}
-		else {
-			success = inputFromPort(audioIn, audio_as_char);	// Receive audio from port
-		}
+		
+		// receive Message struct from port
+		success = inputFromPort(messInAsChar, sizeof(Message));
+		
 		if (success == 1) {
-			// copy audio to iBigBufIn
-			if (compressed) {
-				Huffman_Uncompress(audioInCompressed, audioIn, audio_comp_in_size, audio_as_char);
+			
+			// convert messageIn to type Message
+			memcpy(&messInAsMessage, messInAsChar, bytes_received);
+
+			// add timestamp to message
+			messInAsMessage.timestamp = time(NULL);
+
+			// parse message type and add to correct queue
+			if (messInAsMessage.message_type == audio) {
+				
+				AddMessToAudioQueue(messInAsMessage);
+
+				// increment number of unread messages
+				(*unlistenedAudio)++;
+				(*totalAudio)++;
+
+				// update the listening status 
+				printf("\n%d unheard messages in queue\n\n", *unlistenedAudio);
 			}
-			memcpy(iBigBufIn, audioIn, audio_as_char);
+			else if (messInAsMessage.message_type == text) {
 
-			AddMessToAudioQueue(iBigBufIn);
+				AddMessToQueue(messInAsMessage);
 
-			// increment number of unread messages
-			(*unlistenedAudio)++;
-			(*totalAudio)++;
-
-			// update the listening status 
-			printf("\n%d unheard messages in queue\n\n", *unlistenedAudio);
+			}
 
 			// reset success status
 			success = 0;
