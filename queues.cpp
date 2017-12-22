@@ -166,11 +166,9 @@ void AddMessToAudioQueue(short* audio_file) {
 		a_pNode = (a_link)malloc(sizeof(A_Node)); 	        // Make first Node
 		a_pHead = a_pNode;				                    // save its location
 		a_pTail = a_pNode;
-		a_pNode->Data.sequence = 1;							// set sequence number of first node
 	}
 	else {
 		a_pNode->pNext = (a_link)malloc(sizeof(A_Node));			// Make Node i
-		a_pNode->pNext->Data.sequence = a_pNode->Data.sequence + 1;	// Set sequence number of new node
 		a_pNode = a_pNode->pNext;									// Get pointer to Node i
 	}
 

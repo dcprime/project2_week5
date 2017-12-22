@@ -3,17 +3,25 @@
 
 #include "sound.h"
 
+enum audORtext {audio, text};
+
 /******************* message structure definitions ********************/
 
 // Message structure
 typedef struct message {
+	short recording[SAMPLES_SEC * RECORD_TIME];
     char text[141];
-    short sender_id;
-    short receiver_id;
-    char priority;
-    short sequence;
+	enum audORtext message_type;
+	bool compressed;
+	int data_size;
+    short priority;
+	short sender_id;
+	short receiver_id;
+	time_t timestamp;	// use ctime(&timestamp) to convert to string
     char other[25];
 } Message;
+
+// ------------------- text nodes ------------------- //
 
 // link is a pointer to a Node
 typedef struct node* link;
@@ -24,23 +32,13 @@ struct node { link pNext; Message Data; };
 // Alias for Node = struct node
 typedef struct node Node;
 
-/******************* audio message structure definitions ********************/
-
-// Audio Message structure
-typedef struct a_message {
-	short recording[SAMPLES_SEC * RECORD_TIME];
-	short sender_id;
-	short receiver_id;
-	char priority;
-	short sequence;
-	char other[25];
-} A_Message;
+// ------------------- audio nodes ------------------- //
 
 // link is a pointer to a Node
 typedef struct a_node* a_link;
 
 // Node contains a pointer to next node and a Message structure
-struct a_node { a_link pNext; A_Message Data; };
+struct a_node { a_link pNext; Message Data; };
 
 // Alias for Node = struct node
 typedef struct a_node A_Node;
