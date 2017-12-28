@@ -86,17 +86,15 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 
 int play_audio_file(a_link audio_message) {
 
-	/* code for opening audio from external file
-	fopen_s(&f, filename, "rb");
-	if (!f) {
-	printf("unable to open %s\n", filename);
-	return 0;
-	}
-	printf("Reading from sound file ...\n");
-	fread(iBigBufNew, sizeof(short), lBigBufSize, f);				// Record to new buffer iBigBufNew
-	fclose(f); */
 	InitializePlayback();
-	PlayBuffer(audio_message->Data.recording, lBigBufSize);
+	short converted_audio[audio_as_char/(sizeof(short))];
+	if (audio_message->Data.compressed == true) {
+		Huffman_Uncompress(audio_message->Data.recording, (unsigned char*)converted_audio, audio_message->Data.data_size, audio_as_char);
+	}
+	else {
+		memcpy(converted_audio, audio_message->Data.recording, audio_message->Data.data_size);
+	}
+	PlayBuffer(converted_audio, lBigBufSize);
 	ClosePlayback();
 	return 1;
 }
