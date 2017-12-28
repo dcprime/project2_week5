@@ -36,16 +36,7 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 	scanf_s("%c", &send, 1);
 	while ((c = getchar()) != '\n' && c != EOF) {}		// Flush other input
 	if ((send == 'y') || (send == 'Y')) {
-		/* ----- function to write out to file ---------
-		fopen_s(&f, filename, "wb");
-		if (!f) {
-		printf("unable to open %s\n", filename);
-		return 0;
-		}
-		printf("Writing to sound file ...\n");
-		fwrite(iBigBuf, sizeof(short), lBigBufSize, f);
-		fclose(f);*/
-		
+				
 		memcpy(audio_out, iBigBuf, audio_as_char);
 
 		if (compression) {
@@ -53,13 +44,37 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 			// save return value from Huffman_Compress and send to ouputToPort
 			audio_comp_out_size = Huffman_Compress(audio_out, audio_compressed, audio_as_char);
 		}
+
+		Message message_out;
+		message_out.message_type = audio;
+
 		printf("\nSending audio recording to receiver...\n");
 		if (compression) {
-			// send compressed file
-			outputToPort(audio_compressed, audio_comp_out_size);
+
+			// set output Message fields
+			message_out.compressed = true;
+			message_out.data_size = audio_comp_out_size;
+
+			// set output data size
+			int output_size = sizeof(Message) - audio_as_char + audio_comp_out_size;
+
+			// convert output Message to char array
+			char *message_as_char = (char*)calloc(output_size, sizeof(char));
+			memcpy(message_as_char, &message_out, output_size);
+
+			// send output Message to Port
+			outputToPort(message_as_char, output_size);
 		}
 		else {
-			outputToPort(audio_out, audio_as_char);
+			message_out.compressed = false;
+			message_out.data_size = audio_as_char;
+
+			// convert output Message to char array
+			char *message_as_char = (char*)calloc(sizeof(Message), sizeof(char));
+			memcpy(message_as_char, &message_out, sizeof(Message));
+
+			// send output Message to Port
+			outputToPort(message_as_char, sizeof(Message));
 		}
 		Sleep(1000); // play with this number to see how short (or eliminate?)
 		purgePort();
