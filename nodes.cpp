@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include "nodes.h"
 #include "audio.h"
+#include "queues.h"
 
 // ********* text message functions ********* //
 
@@ -32,7 +33,18 @@ void traverseR(link h, void(*visit)(link)) {
 
 // Print the message content of a node
 void visit(link print_node) {
-    printf("%s\n", print_node->Data.text);
+	if (print_node->Data.compressed) {
+		
+		// create buffer to hold text data and uncompress it
+		unsigned char print_buff[MSGSIZE];
+		Huffman_Uncompress(print_node->Data.text, print_buff, print_node->Data.data_size, MSGSIZE);
+
+		// print text message
+		printf("%s\n", print_buff);
+	}
+	else {
+		printf("%s\n", print_node->Data.text);
+	}
 }
 
 // ********* audio message functions ********* //
@@ -53,6 +65,6 @@ void a_traverseR(a_link h, void(*visit)(a_link)) {
 
 // Play the audio message in the node
 void a_visit(a_link audio_node) {
-	printf("\nPlaying audio message %d\n", audio_node->Data.sequence);
+	printf("\nExtracting audio message...\n");
 	play_audio_file(audio_node);
 }

@@ -6,7 +6,7 @@ void initPort();
 void purgePort();
 void outputToPort(LPCVOID buf, DWORD szBuf);
 int inputFromPort(LPVOID buf, DWORD szBuf);
-void sendMessToPort(char *msg_text);
+void sendMessToPort(unsigned char *msg_text, bool compression);
 void endCOM(void);
 
 // Sub functions

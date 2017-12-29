@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "RS232Comm.h"
+#include "queues.h"
+#include "huffman.h"
 
 #define EX_FATAL 1
 #define BUFSIZE 140									// Size of buffer
@@ -82,10 +84,41 @@ int inputFromPort(LPVOID buf, DWORD szBuf) {
 	}
 }
 
-void sendMessToPort(char *msg_text) {
-    outputToPort(msg_text, strlen(msg_text) + 1);
+void sendMessToPort(unsigned char *msg_text, bool compression) {
+
+	Message text_message_out;
+	int text_comp_out_size;
+
+	text_message_out.data_size = MSGSIZE;
+	text_message_out.compressed = false;
+	text_message_out.message_type = text;
+
+	if (compression) {
+		unsigned char compressed_text[MSGSIZE + HUFFEXTRA];
+		text_comp_out_size = Huffman_Compress(msg_text, compressed_text, MSGSIZE);
+
+		if (text_comp_out_size < MSGSIZE) {
+			text_message_out.data_size = text_comp_out_size;
+			text_message_out.compressed = true;
+			memcpy(text_message_out.text, compressed_text, text_comp_out_size);
+		}
+		else {
+			memcpy(text_message_out.text, msg_text, MSGSIZE);
+		}
+	}
+	else {
+		memcpy(text_message_out.text, msg_text, MSGSIZE);
+	}
+
+	// convert output Message to char array
+	char *message_as_char = (char*)calloc(sizeof(Message), sizeof(char));
+	memcpy(message_as_char, &text_message_out, sizeof(Message));
+
+	// send output Message to Port
+	outputToPort(message_as_char, sizeof(Message));
     Sleep(1000); // play with this number to see how short (or eliminate?)
     purgePort();
+	free(message_as_char);
 }
 
 void endCOM(void) {

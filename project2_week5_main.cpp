@@ -27,7 +27,7 @@ void main(int argc, char *argv[]) {
 	int unlistenedAudio = 0;
 	int totalAudio = 0;
     char choice[STRSIZE];
-    char msg_text[MSGSIZE];
+    unsigned char msg_text[MSGSIZE];
 	bool compression = true;
 
     // initialize the message queue
@@ -39,7 +39,7 @@ void main(int argc, char *argv[]) {
 
         // menu
         printf("\nChoose an option:\n");
-		printf("[L]isten for Incoming Audio Message\n");
+		printf("[L]isten for Incoming Messages\n");
         printf("[R]ecord and Send Audio Message\n");
         printf("[P]lay Audio Message ");
 		printf("- %d audio messages in queue (%d unheard)\n", totalAudio, unlistenedAudio);
@@ -49,7 +49,6 @@ void main(int argc, char *argv[]) {
 		}
 		else
 			printf("OFF\n");
-        printf("[W]ait for Text Message\n");
         printf("[S]end Text Message\n");
         printf("[C]heck Text Messages ");
         printf("- %d messages in queue (%d unread)\n", totalText, unreadText);
@@ -82,18 +81,14 @@ void main(int argc, char *argv[]) {
 		case 't':
 			compression = !compression;
 			break;
-        case 'w':
-            printf("\nWaiting Mode active\n");
-            StartWaitingMode(&unreadText, &totalText);
-            break;
         case 's':
             // get message input from user
             printf("\nEnter message text (up to %d characters) and press ENTER\n", MSGSIZE);
             printf("-> ");
-            fgets(msg_text, MSGSIZE, stdin);
+            fgets((char*)msg_text, MSGSIZE, stdin);
 
             // send message to com port
-            sendMessToPort(msg_text);
+            sendMessToPort(msg_text, compression);
             break;
         case 'c':
             if (IsQueueEmpty()) {

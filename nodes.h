@@ -20,7 +20,7 @@ typedef struct message {
 	short receiver_id;
 	time_t timestamp;	// use ctime(&timestamp) to convert to string
     char other[25];
-	char text[141];
+	unsigned char text[141];
 	unsigned char recording[huff_compressed_size];
 } Message;
 

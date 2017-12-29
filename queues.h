@@ -25,13 +25,10 @@ void  AddToQueue(Node *);
 Node *DeQueue(void);
 
 // add a message to a node and add the node to the queue
-void AddMessToQueue(char* msg_text);
+void AddMessToQueue(Message text_message);
 
 // print all messages in queue from oldest to newest
 void PrintMessages(void);
-
-// begin loop to receive messages from transmitting terminal
-void StartWaitingMode(int* unreadMessages, int* totalMessages);
 
 // initialize the Audio queue
 void InitAudioQueue(void);

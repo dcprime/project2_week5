@@ -36,15 +36,17 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 	scanf_s("%c", &send, 1);
 	while ((c = getchar()) != '\n' && c != EOF) {}		// Flush other input
 	if ((send == 'y') || (send == 'Y')) {
-				
+		
+		// convert audio from short array to char array
 		memcpy(audio_out, iBigBuf, audio_as_char);
 
 		if (compression) {
 			printf("\nCompressing audio message...\n");
-			// save return value from Huffman_Compress and send to ouputToPort
+			// save return value from Huffman_Compress
 			audio_comp_out_size = Huffman_Compress(audio_out, audio_compressed, audio_as_char);
 		}
 
+		// Message structure being sent to receiver
 		Message message_out;
 		message_out.message_type = audio;
 
@@ -64,8 +66,10 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 
 			// send output Message to Port
 			outputToPort(message_as_char, output_size);
+			free(message_as_char);
 		}
 		else {
+			// set output Message fields
 			message_out.compressed = false;
 			message_out.data_size = audio_as_char;
 
@@ -75,6 +79,7 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 
 			// send output Message to Port
 			outputToPort(message_as_char, sizeof(Message));
+			free(message_as_char);
 		}
 		Sleep(1000); // play with this number to see how short (or eliminate?)
 		purgePort();
@@ -87,13 +92,18 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 int play_audio_file(a_link audio_message) {
 
 	InitializePlayback();
+
+	// array of shorts to hold audio data
 	short converted_audio[audio_as_char/(sizeof(short))];
+
+	// extract audio as char array from received structure in Node
 	if (audio_message->Data.compressed == true) {
 		Huffman_Uncompress(audio_message->Data.recording, (unsigned char*)converted_audio, audio_message->Data.data_size, audio_as_char);
 	}
 	else {
 		memcpy(converted_audio, audio_message->Data.recording, audio_message->Data.data_size);
 	}
+	printf("\nPlaying audio message...\n");
 	PlayBuffer(converted_audio, lBigBufSize);
 	ClosePlayback();
 	return 1;

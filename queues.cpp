@@ -56,7 +56,7 @@ Node *DeQueue(void)
     return(pTemp);	  // return old ‘head’ 	
 }
 
-void AddMessToQueue(char* msg_text) {
+void AddMessToQueue(Message text_message) {
     // create node to hold message content
     if (IsQueueEmpty()) {
         pNode = (link)malloc(sizeof(Node)); 	          // Make first Node
@@ -65,11 +65,11 @@ void AddMessToQueue(char* msg_text) {
     }
     else {
         pNode->pNext = (link)malloc(sizeof(Node));      // Make Node i
-        pNode = pNode->pNext;			                      // Get pointer to Node i
+        pNode = pNode->pNext;			                // Get pointer to Node i
     }
 
-    // add message content to node and add node to queue
-    memcpy(pNode->Data.text, msg_text, strlen(msg_text) + 1);
+	// add message content to node and add node to queue
+	memcpy(&(pNode->Data), &text_message, sizeof(Message));
     AddToQueue(pNode);
     printf("\n--- Message added to queue ---\n");
 }
@@ -78,51 +78,6 @@ void PrintMessages(void) {
     printf("\n--- Messages in queue from oldest to newest ---\n\n");
     traverse(pHead, visit);
     printf("\n--- End of messages ---\n");
-}
-
-/************************ waiting mode (text) ************************/
-void StartWaitingMode(int* unreadMessages, int* totalMessages) {
-    int run = TRUE;
-    char msgIn[MSGSIZE];        // buffer to hold incoming message
-    int success = 0;
-    short dot_counter = 0;
-    unsigned long timeout = 0;
-    
-    while (run == TRUE) {
-        success = inputFromPort(msgIn, MSGSIZE);	// Receive string from port
-        if (success == 1) {
-            // add message to node and node to queue
-            AddMessToQueue(msgIn);
-
-            // increment number of unread messages
-            (*unreadMessages)++;
-			(*totalMessages)++;
-
-            // update the listening status 
-            printf("\n%d unread messages in queue\n\n", *unreadMessages);
-
-            // reset success status
-            success = 0;
-        }
-        else if (success == -1) {
-            run = FALSE;
-        }
-
-        // print a dot every LOOPDELAY times through the loop to show Listening Mode is active
-        dot_counter++;
-        if (dot_counter == LOOPDELAY) {
-            printf(".");
-            dot_counter = 0;
-        }
-
-        // listening mode time out
-        timeout++;
-        if (timeout == TIMEOUT) {
-            printf("\n\n------------- Waiting Mode timed out -------------\n");
-            run = FALSE;
-        }
-
-    } // end while loop
 }
 
 //************************* audio message functions *************************//
