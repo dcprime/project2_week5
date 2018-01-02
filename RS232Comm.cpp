@@ -116,6 +116,7 @@ void sendMessToPort(unsigned char *msg_text, bool compression) {
 	memcpy(message_as_char, &text_message_out, sizeof(Message));
 
 	// send output Message to Port
+	printf("\nSending text message to receiver\n");
 	outputToPort(message_as_char, sizeof(Message));
     Sleep(1000); // play with this number to see how short (or eliminate?)
     purgePort();

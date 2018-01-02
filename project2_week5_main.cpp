@@ -61,7 +61,7 @@ void main(int argc, char *argv[]) {
         printf("[C]heck Text Messages ");
         printf("- %d messages in queue (%d unread)\n", totalText, unreadText);
         printf("[Q]uit\n");
-        printf("\nEnter L, R, P, W, S, C, or Q: ");
+        printf("\nEnter L, R, P, T, S, C, or Q: ");
 
         fgets(choice, STRSIZE, stdin);
 
