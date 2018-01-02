@@ -85,6 +85,17 @@ int node_count(link h) {
 	return(node_count(h->pNext) + 1);
 }
 
+int unread_count(link h) {
+	if (h == NULL) return (0);
+	if (h->Data.accessed == 0) {
+		return(unread_count(h->pNext) + 1);
+	}
+	else {
+		return(unread_count(h->pNext) + 0);
+	}
+	
+}
+
 //************************* audio message functions *************************//
 
 void InitAudioQueue(void)
@@ -149,11 +160,33 @@ int a_node_count(a_link h) {
 	return(a_node_count(h->pNext) + 1);
 }
 
+int unlistened_count(a_link h) {
+	if (h == NULL) return (0);
+	if (h->Data.accessed == 0) {
+		return(unlistened_count(h->pNext) + 1);
+	}
+	else {
+		return(unlistened_count(h->pNext) + 0);
+	}
+
+}
+
+// ************************** public count functions ************************** //
+
 int get_count(audORtext choice) {
 	if (choice == audio) {
 		return (a_node_count(a_pHead));
 	}
 	else {
 		return (node_count(pHead));
+	}
+}
+
+int get_unaccessed(audORtext choice) {
+	if (choice == audio) {
+		return (unlistened_count(a_pHead));
+	}
+	else {
+		return (unread_count(pHead));
 	}
 }

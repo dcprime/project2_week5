@@ -37,6 +37,14 @@ void main(int argc, char *argv[]) {
 
     while (run == TRUE) {
 
+		// update read and unread text counts
+		totalText = get_count(text);
+		unreadText = get_unaccessed(text);
+
+		// update listened and unlistened audio counts
+		totalAudio = get_count(audio);
+		unlistenedAudio = get_unaccessed(audio);
+
         // menu
         printf("\nChoose an option:\n");
 		printf("[L]isten for Incoming Messages\n");
@@ -75,7 +83,6 @@ void main(int argc, char *argv[]) {
 			}
 			else {
 				PlayMessages();
-				unlistenedAudio = 0;
 			}
             break;
 		case 't':

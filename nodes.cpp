@@ -45,6 +45,7 @@ void visit(link print_node) {
 	else {
 		printf("%s\n", print_node->Data.text);
 	}
+	print_node->Data.accessed = 1;
 }
 
 // ********* audio message functions ********* //
@@ -67,4 +68,5 @@ void a_traverseR(a_link h, void(*visit)(a_link)) {
 void a_visit(a_link audio_node) {
 	printf("\nExtracting audio message...\n");
 	play_audio_file(audio_node);
+	audio_node->Data.accessed = 1;
 }

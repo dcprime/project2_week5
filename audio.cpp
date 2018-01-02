@@ -49,6 +49,7 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 		// Message structure being sent to receiver
 		Message message_out;
 		message_out.message_type = audio;
+		message_out.accessed = 0;
 
 		printf("\nSending audio recording to receiver...\n");
 		if (compression) {

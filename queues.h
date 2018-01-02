@@ -33,6 +33,9 @@ void PrintMessages(void);
 // count the number of Nodes in the queue (text)
 int node_count(link h);
 
+// count the number of Nodes with unread text messages
+int unread_count(link h);
+
 // initialize the Audio queue
 void InitAudioQueue(void);
 
@@ -53,5 +56,11 @@ void PlayMessages(void);
 // count the number of Nodes in the queue (text)
 int a_node_count(a_link h);
 
+// count the number of Nodes with unlistened audio messages
+int unlistened_count(a_link h);
+
 // interface for audio or text node count
 int get_count(audORtext choice);
+
+// interface for audio or text unaccessed message count
+int get_unaccessed(audORtext choice);

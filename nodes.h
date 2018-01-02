@@ -16,6 +16,7 @@ typedef struct message {
 	bool compressed;
 	int data_size;
     short priority;
+	bool accessed;
 	short sender_id;
 	short receiver_id;
 	time_t timestamp;	// use ctime(&timestamp) to convert to string

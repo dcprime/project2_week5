@@ -92,6 +92,7 @@ void sendMessToPort(unsigned char *msg_text, bool compression) {
 	text_message_out.data_size = MSGSIZE;
 	text_message_out.compressed = false;
 	text_message_out.message_type = text;
+	text_message_out.accessed = 0;
 
 	if (compression) {
 		unsigned char compressed_text[MSGSIZE + HUFFEXTRA];
