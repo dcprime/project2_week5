@@ -80,6 +80,11 @@ void PrintMessages(void) {
     printf("\n--- End of messages ---\n");
 }
 
+int node_count(link h) {
+	if (h == NULL) return (0);
+	return(node_count(h->pNext) + 1);
+}
+
 //************************* audio message functions *************************//
 
 void InitAudioQueue(void)
@@ -137,4 +142,18 @@ void PlayMessages(void) {
 	printf("\n--- Audio message in queue from oldest to newest ---\n\n");
 	a_traverse(a_pHead, a_visit);
 	printf("\n--- End of audio messages ---\n");
+}
+
+int a_node_count(a_link h) {
+	if (h == NULL) return (0);
+	return(a_node_count(h->pNext) + 1);
+}
+
+int get_count(audORtext choice) {
+	if (choice == audio) {
+		return (a_node_count(a_pHead));
+	}
+	else {
+		return (node_count(pHead));
+	}
 }

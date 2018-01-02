@@ -30,6 +30,9 @@ void AddMessToQueue(Message text_message);
 // print all messages in queue from oldest to newest
 void PrintMessages(void);
 
+// count the number of Nodes in the queue (text)
+int node_count(link h);
+
 // initialize the Audio queue
 void InitAudioQueue(void);
 
@@ -46,3 +49,9 @@ A_Node *DeQueueAudio(void);
 void AddMessToAudioQueue(Message audio_message);
 
 void PlayMessages(void);
+
+// count the number of Nodes in the queue (text)
+int a_node_count(a_link h);
+
+// interface for audio or text node count
+int get_count(audORtext choice);
