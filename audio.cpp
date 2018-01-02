@@ -56,6 +56,7 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 			// set output Message fields
 			message_out.compressed = true;
 			message_out.data_size = audio_comp_out_size;
+			memcpy(message_out.recording, audio_compressed, audio_comp_out_size);
 
 			// set output data size
 			int output_size = sizeof(Message) - audio_as_char + audio_comp_out_size;
@@ -72,6 +73,7 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 			// set output Message fields
 			message_out.compressed = false;
 			message_out.data_size = audio_as_char;
+			memcpy(message_out.recording, audio_out, audio_as_char);
 
 			// convert output Message to char array
 			char *message_as_char = (char*)calloc(sizeof(Message), sizeof(char));
