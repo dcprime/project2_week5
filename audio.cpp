@@ -106,7 +106,12 @@ int play_audio_file(a_link audio_message) {
 	else {
 		memcpy(converted_audio, audio_message->Data.recording, audio_message->Data.data_size);
 	}
-	printf("\nPlaying audio message...\n");
+
+	const short time_string_len = 26;
+	char time_as_string[time_string_len];
+	ctime_s(time_as_string, time_string_len, &(audio_message->Data.timestamp));
+
+	printf("\nAudio received on %s\n", time_as_string);
 	PlayBuffer(converted_audio, lBigBufSize);
 	ClosePlayback();
 	return 1;

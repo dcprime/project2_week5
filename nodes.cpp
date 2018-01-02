@@ -11,6 +11,7 @@
 #include <string.h>
 #include <malloc.h>
 #include <stdlib.h>
+#include <time.h>
 #include "nodes.h"
 #include "audio.h"
 #include "queues.h"
@@ -33,6 +34,13 @@ void traverseR(link h, void(*visit)(link)) {
 
 // Print the message content of a node
 void visit(link print_node) {
+
+	const short time_string_len = 26;
+	char time_as_string[time_string_len];
+	ctime_s(time_as_string, time_string_len, &(print_node->Data.timestamp));
+
+	printf("\nText received on %s", time_as_string);
+
 	if (print_node->Data.compressed) {
 		
 		// create buffer to hold text data and uncompress it
