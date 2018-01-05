@@ -91,11 +91,12 @@ void sendMessToPort(unsigned char *msg_text, bool compression, short pri_value) 
 
 	text_message_out.data_size = MSGSIZE;
 	text_message_out.compressed = false;
+	text_message_out.vote[0] = false;
+	text_message_out.vote[1] = false;
 	text_message_out.message_type = text;
 	text_message_out.accessed = 0;
-	
-	// populate priority array for message_out for voting error check
 	text_message_out.priority = pri_value;
+	
 
 	if (compression) {
 		unsigned char compressed_text[MSGSIZE + HUFFEXTRA];
@@ -104,6 +105,8 @@ void sendMessToPort(unsigned char *msg_text, bool compression, short pri_value) 
 		if (text_comp_out_size < MSGSIZE) {
 			text_message_out.data_size = text_comp_out_size;
 			text_message_out.compressed = true;
+			text_message_out.vote[0] = true;	// values for error checking
+			text_message_out.vote[1] = true;	// values for error checking
 			memcpy(text_message_out.text, compressed_text, text_comp_out_size);
 		}
 		else {

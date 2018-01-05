@@ -14,6 +14,7 @@ const int huff_compressed_size = audio_as_char + HUFFEXTRA;
 typedef struct message {
 	enum audORtext message_type;
 	bool compressed;
+	short vote[2];
 	int data_size;
     short priority;
 	bool accessed;

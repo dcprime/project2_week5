@@ -50,8 +50,8 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression, short pri_
 		Message message_out;
 		message_out.message_type = audio;
 		message_out.accessed = 0;
-
-		// populate priority array for message_out for voting error check
+		message_out.vote[0] = false;
+		message_out.vote[1] = false;
 		message_out.priority = pri_value;
 
 		printf("\nSending audio recording to receiver...\n");
@@ -59,6 +59,8 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression, short pri_
 
 			// set output Message fields
 			message_out.compressed = true;
+			message_out.vote[0] = true;		// values for error checking
+			message_out.vote[1] = true;		// values for error checking
 			message_out.data_size = audio_comp_out_size;
 			memcpy(message_out.recording, audio_compressed, audio_comp_out_size);
 
@@ -115,6 +117,7 @@ int play_audio_file(a_link audio_message) {
 	ctime_s(time_as_string, time_string_len, &(audio_message->Data.timestamp));
 
 	printf("\nAudio received on %s\n", time_as_string);
+	printf(" - Priority %d\n", audio_message->Data.priority);
 	PlayBuffer(converted_audio, lBigBufSize);
 	ClosePlayback();
 	return 1;
@@ -142,6 +145,15 @@ void StartListeningMode(void) {
 			// add timestamp to message
 			messInAsMessage.timestamp = time(NULL);
 
+			// verify compression setting is accurately transmitted
+			short verify = messInAsMessage.compressed + messInAsMessage.vote[0] + messInAsMessage.vote[1];
+			if (verify > 1) {
+				messInAsMessage.compressed = true;
+			}
+			else {
+				messInAsMessage.compressed = false;
+			}
+			
 			// parse message type and add to correct queue
 			if (messInAsMessage.message_type == audio) {
 				
