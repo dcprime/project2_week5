@@ -30,7 +30,7 @@ unsigned char audio_compressed[huff_compressed_size];
 int audio_comp_out_size;
 int bytes_received;
 
-int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
+int save_and_send(short* iBigBuf, long lBigBufSize, bool compression, short pri_value) {
 	char send;
 	printf("\nWould you like to send your message? (y/n): ");
 	scanf_s("%c", &send, 1);
@@ -50,6 +50,7 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression) {
 		Message message_out;
 		message_out.message_type = audio;
 		message_out.accessed = 0;
+		message_out.priority = pri_value;
 
 		printf("\nSending audio recording to receiver...\n");
 		if (compression) {
@@ -180,4 +181,29 @@ void StartListeningMode(int* unlistenedAudio, int* totalAudio, bool compressed) 
 		}
 
 	} // end while loop
+}
+
+short SetPriority(void) {
+
+	char input;
+	short value;
+	bool run_loop = 1;
+	const int ascii_offset = 48;
+
+	while (run_loop) {
+		printf("\nWhat is the message priority? [1-5]: ");
+
+		scanf_s("%c", &input, 1);
+		while ((c = getchar()) != '\n' && c != EOF) {}		// Flush other input
+
+		// check if number is between 1 and 5 in ascii
+		if ((input > ascii_offset) && (input < (ascii_offset + 6))) {
+			value = input - ascii_offset;
+			printf("\nPriority set at %d\n", value);
+			return(value);
+		}
+		else {
+			printf("\nPlease enter a value between 1 and 5\n");
+		}
+	}
 }

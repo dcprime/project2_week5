@@ -84,7 +84,7 @@ int inputFromPort(LPVOID buf, DWORD szBuf) {
 	}
 }
 
-void sendMessToPort(unsigned char *msg_text, bool compression) {
+void sendMessToPort(unsigned char *msg_text, bool compression, short pri_value) {
 
 	Message text_message_out;
 	int text_comp_out_size;
@@ -93,6 +93,7 @@ void sendMessToPort(unsigned char *msg_text, bool compression) {
 	text_message_out.compressed = false;
 	text_message_out.message_type = text;
 	text_message_out.accessed = 0;
+	text_message_out.priority = pri_value;
 
 	if (compression) {
 		unsigned char compressed_text[MSGSIZE + HUFFEXTRA];

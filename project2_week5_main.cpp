@@ -26,6 +26,7 @@ void main(int argc, char *argv[]) {
     int totalText = 0;
 	int unlistenedAudio = 0;
 	int totalAudio = 0;
+	short priority = 0;
     char choice[STRSIZE];
     unsigned char msg_text[MSGSIZE];
 	bool compression = true;
@@ -74,7 +75,8 @@ void main(int argc, char *argv[]) {
             InitializeRecording();
             RecordBuffer(iBigBuf, lBigBufSize);
             CloseRecording();
-            save_and_send(iBigBuf, lBigBufSize, compression);
+			priority = SetPriority();	// set message priority
+            save_and_send(iBigBuf, lBigBufSize, compression, priority);
             break;
         case 'p':
 			if (IsAudioQueueEmpty()) {
@@ -93,9 +95,10 @@ void main(int argc, char *argv[]) {
             printf("\nEnter message text (up to %d characters) and press ENTER\n", MSGSIZE);
             printf("-> ");
             fgets((char*)msg_text, MSGSIZE, stdin);
+			priority = SetPriority();	// set message priority
 
             // send message to com port
-            sendMessToPort(msg_text, compression);
+            sendMessToPort(msg_text, compression, priority);
             break;
         case 'c':
             if (IsQueueEmpty()) {

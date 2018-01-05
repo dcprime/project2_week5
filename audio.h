@@ -9,9 +9,12 @@
 /******************* function prototypes **********************/
 
 // save audio file and send to receiver
-int save_and_send(short* iBigBuf, long lBigBufSize, bool compression);
+int save_and_send(short* iBigBuf, long lBigBufSize, bool compression, int pri_value);
 
 // play received audio file
 int play_audio_file(a_link audio_message);
 
 void StartListeningMode(int* unlistenedAudio, int* totalAudio, bool compressed);
+
+// get priority value for message
+short SetPriority(void);
