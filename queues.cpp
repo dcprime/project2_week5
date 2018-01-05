@@ -75,9 +75,34 @@ void AddMessToQueue(Message text_message) {
 }
 
 void PrintMessages(void) {
-    printf("\n--- Messages in queue from oldest to newest ---\n\n");
-    traverse(pHead, visit);
-    printf("\n--- End of messages ---\n");
+
+	char input, c;
+	bool run_loop = 1;
+
+	while (run_loop) {
+		printf("\nView messages by [T]ime received or [P]riority? Enter T or P: ");
+
+		scanf_s("%c", &input, 1);
+		while ((c = getchar()) != '\n' && c != EOF) {}		// Flush other input
+
+		switch (tolower(input)) {
+		case 't':
+			printf("\n--- Messages in queue from oldest to newest ---\n\n");
+			traverse(pHead, visit);
+			printf("\n--- End of messages ---\n");
+			run_loop = 0;
+			break;
+		case 'p':
+			printf("\n--- Messages in queue from top priority to least ---\n\n");
+			// traverse(pHead, visit);
+			printf("\n--- End of messages ---\n");
+			run_loop = 0;
+			break;
+		default:
+			printf("\nPlease enter either T or P\n");
+			break;
+		}
+	}
 }
 
 int node_count(link h) {

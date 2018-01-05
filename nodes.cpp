@@ -32,6 +32,10 @@ void traverseR(link h, void(*visit)(link)) {
     (*visit)(h);
 }
 
+void traverseP(link h, void(*visit)(link)) {
+
+}
+
 // Print the message content of a node
 void visit(link print_node) {
 
@@ -40,6 +44,7 @@ void visit(link print_node) {
 	ctime_s(time_as_string, time_string_len, &(print_node->Data.timestamp));
 
 	printf("\nText received on %s", time_as_string);
+	printf(" - Priority %d\n", print_node->Data.priority);
 
 	if (print_node->Data.compressed) {
 		

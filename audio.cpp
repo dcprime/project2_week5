@@ -50,6 +50,8 @@ int save_and_send(short* iBigBuf, long lBigBufSize, bool compression, short pri_
 		Message message_out;
 		message_out.message_type = audio;
 		message_out.accessed = 0;
+
+		// populate priority array for message_out for voting error check
 		message_out.priority = pri_value;
 
 		printf("\nSending audio recording to receiver...\n");
@@ -118,7 +120,7 @@ int play_audio_file(a_link audio_message) {
 	return 1;
 }
 
-void StartListeningMode(int* unlistenedAudio, int* totalAudio, bool compressed) {
+void StartListeningMode(void) {
 
 	int run = TRUE;
 	int success = 0;
@@ -145,12 +147,6 @@ void StartListeningMode(int* unlistenedAudio, int* totalAudio, bool compressed) 
 				
 				AddMessToAudioQueue(messInAsMessage);
 
-				// increment number of unread messages
-				(*unlistenedAudio)++;
-				(*totalAudio)++;
-
-				// update the listening status 
-				printf("\n%d unheard messages in queue\n\n", *unlistenedAudio);
 			}
 			else if (messInAsMessage.message_type == text) {
 
@@ -165,13 +161,6 @@ void StartListeningMode(int* unlistenedAudio, int* totalAudio, bool compressed) 
 		else if (success == -1) {
 			run = FALSE;
 		}
-
-		/* print a dot every LOOPDELAY times through the loop to show Listening Mode is active
-		dot_counter++;
-		if (dot_counter == AUDIOLOOPDELAY) {
-			printf(".");
-			dot_counter = 0;
-		}*/
 
 		// listening mode time out
 		timeout++;

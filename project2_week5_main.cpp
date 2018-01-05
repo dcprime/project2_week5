@@ -69,7 +69,7 @@ void main(int argc, char *argv[]) {
         switch (tolower(choice[0])) {
 		case 'l':
 			printf("\nListening Mode active\n");
-			StartListeningMode(&unlistenedAudio, &totalAudio, compression);
+			StartListeningMode();
 			break;
         case 'r':
             InitializeRecording();

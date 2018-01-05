@@ -53,6 +53,8 @@ void traverse(link h, void(*visit)(link));
 
 void traverseR(link h, void(*visit)(link));
 
+void traverseP(link h, void(*visit)(link));
+
 void visit(link print_node);
 
 void a_traverse(a_link h, void(*a_visit)(a_link));

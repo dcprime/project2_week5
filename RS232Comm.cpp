@@ -93,6 +93,8 @@ void sendMessToPort(unsigned char *msg_text, bool compression, short pri_value) 
 	text_message_out.compressed = false;
 	text_message_out.message_type = text;
 	text_message_out.accessed = 0;
+	
+	// populate priority array for message_out for voting error check
 	text_message_out.priority = pri_value;
 
 	if (compression) {
